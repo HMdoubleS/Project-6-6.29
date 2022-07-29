@@ -15,7 +15,7 @@ const normalizePort = val => {
 }
 
 const port = normalizePort(process.env.PORT || '3000');
-// app.set('port', port); 
+app.set('port', port); 
 
 // checks for various errors and handles them appropriately - it is then registered to the server
 const errorHandler = error => {

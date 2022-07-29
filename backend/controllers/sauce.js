@@ -6,11 +6,16 @@ exports.createSauce = (req, res, next) => {
   req.body.sauce = req.body;
   const url = req.protocol + '://' + req.get('host');
   const sauce = new Sauce({
-    title: req.body.title,
-    description: req.body.description,
+    userId: req.params.userId,
+    name: req.body.name,
+    manufacturer: req.body.manufacturer,
+    mainPepper: req.body.mainPepper,
     imageUrl: url + '/images/' + req.file.filename,
-    price: req.body.price,
-    userId: req.body.userId
+    heat: req.body.heat,
+    likes: req.body.likes,
+    dislikes: req.body.dislikes,
+    userLiked: req.body.userLiked,
+    userDisliked: req.body.userDisliked
   });
   // const thing = new Thing({
   //   title: req.body.thing.title,
@@ -57,22 +62,30 @@ exports.modifySauce = (req, res, next) => {
   if (req.file) {
     const url = req.protocol + '://' + req.get('host');
     req.body.sauce = req.body;
-    thing = {
-      _id: req.params.id,
-      title: req.body.title,
-      description: req.body.description,
+    sauce = {
+      userId: req.params.userId,
+      name: req.body.name,
+      manufacturer: req.body.manufacturer,
+      mainPepper: req.body.mainPepper,
       imageUrl: url + '/images/' + req.file.filename,
-      price: req.body.price,
-      userId: req.body.userId
+      heat: req.body.heat,
+      likes: req.body.likes,
+      dislikes: req.body.dislikes,
+      userLiked: req.body.userLiked,
+      userDisliked: req.body.userDisliked
     };
   } else {
     sauce = {
-      _id: req.params.id,
-      title: req.body.title,
-      description: req.body.description,
+      userId: req.params.userId,
+      name: req.body.name,
+      manufacturer: req.body.manufacturer,
+      mainPepper: req.body.mainPepper,
       imageUrl: req.body.imageUrl,
-      price: req.body.price,
-      userId: req.body.userId
+      heat: req.body.heat,
+      likes: req.body.likes,
+      dislikes: req.body.dislikes,
+      userLiked: req.body.userLiked,
+      userDisliked: req.body.userDisliked
     };
   }
   Sauce.updateOne({_id: req.params.id}, sauce).then(
@@ -115,8 +128,8 @@ exports.deleteSauce = (req, res, next) => {
 
 exports.getAllSauces = (req, res, next) => {
   Sauce.find().then(
-    (things) => {
-      res.status(200).json(things);
+    (sauces) => {
+      res.status(200).json(sauces);
     }
   ).catch(
     (error) => {

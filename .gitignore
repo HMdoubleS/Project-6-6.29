@@ -38,6 +38,8 @@ testem.log
 /typings
 /images
 .env
+.angular
+
 
 # System files
 .DS_Store

@@ -9,7 +9,7 @@ const userRoutes = require('./routes/user');
 dotenv.config();
 const app = express();
 
-const connectionString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.cem88.mongodb.net/test?retryWrites=true&w=majority`
+const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.telem.mongodb.net/?retryWrites=true&w=majority`
 // connecting MongoDB Atlas
 mongoose.connect(connectionString)
     .then(() => {

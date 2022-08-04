@@ -45,7 +45,7 @@ exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id
   }).then(
-    (thing) => {
+    (sauce) => {
       res.status(200).json(sauce);
     }
   ).catch(
@@ -127,6 +127,7 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.getAllSauces = (req, res, next) => {
+  console.log('I am here');
   Sauce.find().then(
     (sauces) => {
       res.status(200).json(sauces);

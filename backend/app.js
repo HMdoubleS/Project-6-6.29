@@ -2,6 +2,7 @@ const express = require('express'); // imports framework
 const mongoose = require('mongoose'); 
 const path = require('path');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
@@ -9,10 +10,9 @@ const userRoutes = require('./routes/user');
 dotenv.config();
 const app = express();
 
-// const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.telem.mongodb.net/?retryWrites=true&w=majority`
+const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.telem.mongodb.net/test?retryWrites=true&w=majority`
 // connecting MongoDB Atlas
-// mongoose.connect(connectionString)
-mongoose.connect('mongodb+srv://hannah:hhGuCJ1jsbSkfzZX@cluster0.telem.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect(connectionString)
     .then(() => {
         console.log('Successfully connected to MongoDB Atlas!');    
     })
@@ -22,6 +22,7 @@ mongoose.connect('mongodb+srv://hannah:hhGuCJ1jsbSkfzZX@cluster0.telem.mongodb.n
     });
 
 app.use(express.json());
+app.use(cors());
 
 // setting headers 
 app.use((req, res, next) => {
@@ -34,8 +35,7 @@ app.use((req, res, next) => {
 
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-app.use('/api/sauce', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;

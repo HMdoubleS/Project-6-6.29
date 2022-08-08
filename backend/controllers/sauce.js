@@ -2,20 +2,24 @@ const Sauce = require('../models/sauce');
 const fs = require('fs'); // file system
 
 exports.createSauce = (req, res, next) => {
-  // console.log(req.file);
-  req.body.sauce = req.body;
+  // console.log(filename);
+  if(typeof req.body.sauce === "string"){
+    req.body.sauce = JSON.parse(req.body.sauce)
+  }else{
+  req.body.sauce = req.body.sauce }
   const url = req.protocol + '://' + req.get('host');
   const sauce = new Sauce({
-    userId: req.params.userId,
-    name: req.body.name,
-    manufacturer: req.body.manufacturer,
-    mainPepper: req.body.mainPepper,
+    userId: req.body.sauce.userId,
+    name: req.body.sauce.name,
+    manufacturer: req.body.sauce.manufacturer,
+    description: req.body.sauce.description,
+    mainPepper: req.body.sauce.mainPepper,
     imageUrl: url + '/images/' + req.file.filename,
-    heat: req.body.heat,
-    likes: req.body.likes,
-    dislikes: req.body.dislikes,
-    userLiked: req.body.userLiked,
-    userDisliked: req.body.userDisliked
+    heat: req.body.sauce.heat,
+    likes: 0,
+    dislikes: 0,
+    userLiked: req.body.sauce.userLiked,
+    userDisliked: req.body.sauce.userDisliked
   });
   // const thing = new Thing({
   //   title: req.body.thing.title,
@@ -63,29 +67,23 @@ exports.modifySauce = (req, res, next) => {
     const url = req.protocol + '://' + req.get('host');
     req.body.sauce = req.body;
     sauce = {
-      userId: req.params.userId,
-      name: req.body.name,
-      manufacturer: req.body.manufacturer,
-      mainPepper: req.body.mainPepper,
+      _id: req.params.id,
+      // userId: req.params.userId,
+      name: req.body.sauce.name,
+      manufacturer: req.body.sauce.manufacturer,
+      mainPepper: req.body.sauce.mainPepper,
       imageUrl: url + '/images/' + req.file.filename,
-      heat: req.body.heat,
-      likes: req.body.likes,
-      dislikes: req.body.dislikes,
-      userLiked: req.body.userLiked,
-      userDisliked: req.body.userDisliked
+      heat: req.body.sauce.heat,
     };
   } else {
     sauce = {
+      _id: req.params.id,
       userId: req.params.userId,
       name: req.body.name,
       manufacturer: req.body.manufacturer,
       mainPepper: req.body.mainPepper,
       imageUrl: req.body.imageUrl,
       heat: req.body.heat,
-      likes: req.body.likes,
-      dislikes: req.body.dislikes,
-      userLiked: req.body.userLiked,
-      userDisliked: req.body.userDisliked
     };
   }
   Sauce.updateOne({_id: req.params.id}, sauce).then(
@@ -139,4 +137,7 @@ exports.getAllSauces = (req, res, next) => {
       });
     }
  );
+};
+
+exports.getRating = (req, res, next) => {
 };

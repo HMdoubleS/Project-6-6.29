@@ -18,8 +18,8 @@ exports.createSauce = (req, res, next) => {
     heat: req.body.sauce.heat,
     likes: 0,
     dislikes: 0,
-    usersLiked: req.body.sauce.usersLiked,
-    usersDisliked: req.body.sauce.usersDisliked
+    usersLiked: [],
+    usersDisliked: []
   });
   console.log(sauce);
   sauce.save().then(
@@ -54,6 +54,7 @@ exports.getOneSauce = (req, res, next) => {
   );
 };
 
+// used code from delete in order to delete the old image
 exports.modifySauce = (req, res, next) => {
   let sauce = new Sauce({ _id: req.params._id });
   if (req.file) {
@@ -158,23 +159,22 @@ exports.getRating = (req, res, next) => {
 
       // if likes are 1 then add user to usersLiked array if it does not include the user
       if(req.body.likes === 1) {
-        if(!sauceUpdate.usersLiked.includes(req.body.userId)) { 
-          sauceUpdate.usersLiked.push(req.body.userId)
-          sauceUpdate += 1
+        console.log(req.body.userId)
+        if(!sauceRatingUpdate.usersLiked.includes(req.body.userId)) { 
+          sauceRatingUpdate.usersLiked.push(req.body.userId)
+          sauceRatingUpdate.likes += 1
           console.log(sauceRatingUpdate)
         }
-      } else if (req.body.like === -1) {
-        console.log(sauceRatingUpdate);
-
       // if likes are -1, then add the user to the usersDisliked array
-
+      } else if (req.body.like === -1) {
+        console.log(sauceRatingUpdate)
+        if(!sauceRatingUpdate.usersDisliked.includes(req.body.userId)) { 
+          sauceRatingUpdate.usersDisliked.push(req.body.userId)
+          sauceRatingUpdate.dislikes += 1
+          console.log(sauceRatingUpdate)
+        }
       }
-    }
-  )
-
-
-
-    // updating the sauce update object
+  // updating the sauce update object
   Sauce.updateOne({_id: req.params.id}, sauceRatingUpdate)
   .then(() => {
       res.status(201).json({
@@ -187,8 +187,7 @@ exports.getRating = (req, res, next) => {
         error: error
       });
     }
-  );
+  )
 }
-
-
+)}
 

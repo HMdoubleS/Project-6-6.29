@@ -143,9 +143,10 @@ exports.getAllSauces = (req, res, next) => {
  );
 };
 
+
+// find one sauce
+// use a conditional to show which rating has been clicked - will assign a number (1, -1, 0)
 exports.getRating = (req, res, next) => {
-  // find one sauce
-  // use a conditional to show which rating has been clicked - will assign a number (1, -1, 0)
   Sauce.findOne({_id: req.params.id}).then(
     (sauce) => {
       // update object
@@ -158,7 +159,7 @@ exports.getRating = (req, res, next) => {
       console.log(sauce);
 
       // if likes are 1 then add user to usersLiked array if it does not include the user
-      if(req.body.likes === 1) {
+      if(req.body.like === 1) {
         console.log(req.body.userId)
         if(!sauceRatingUpdate.usersLiked.includes(req.body.userId)) { 
           sauceRatingUpdate.usersLiked.push(req.body.userId)
@@ -174,6 +175,13 @@ exports.getRating = (req, res, next) => {
           console.log(sauceRatingUpdate)
         }
       }
+      // } else if (req.body.likes === 0 //not sure what comes next) TODO: start here
+      /* TODO: petes best and adonis sauce show the wrong info on mongoDB and do not work when like or dislike is 
+      clicked - shows dislikes as undefined and likes as NaN; need a way to clear things from the arrays */
+      // info missing on mongoDb but not sure why, I changed one on the database side and now it works //
+
+
+
   // updating the sauce update object
   Sauce.updateOne({_id: req.params.id}, sauceRatingUpdate)
   .then(() => {
@@ -188,6 +196,6 @@ exports.getRating = (req, res, next) => {
       });
     }
   )
-}
+ }
 )}
 

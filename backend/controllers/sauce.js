@@ -147,8 +147,8 @@ exports.getAllSauces = (req, res, next) => {
 // find one sauce
 // use a conditional to show which rating has been clicked - will assign a number (1, -1, 0)
 exports.getRating = (req, res, next) => {
-  Sauce.findOne({_id: req.params.id}).then(
-    (sauce) => {
+  Sauce.findOne({_id: req.params.id}).then( // front end sends id
+    (sauce) => { // data from the server - record
       // update object
       const sauceRatingUpdate = {
         likes: sauce.likes,
@@ -159,7 +159,7 @@ exports.getRating = (req, res, next) => {
       console.log(sauce);
 
       // if likes are 1 then add user to usersLiked array if it does not include the user
-      if(req.body.like === 1) {
+      if (req.body.like === 1) {
         console.log(req.body.userId)
         if(!sauceRatingUpdate.usersLiked.includes(req.body.userId)) { 
           sauceRatingUpdate.usersLiked.push(req.body.userId)
@@ -174,13 +174,18 @@ exports.getRating = (req, res, next) => {
           sauceRatingUpdate.dislikes += 1
           console.log(sauceRatingUpdate)
         }
+
+      } else if (req.body.likes === 0 && sauce.usersLiked.some(userId => userId === req.body.userId)) {
+        const index = sauce.usersLiked.findIndex(userId => userId === req.body.userId)
+        sauceRatingUpdate.usersLiked.splice(index, 1)
+        sauceRatingUpdate.likes = sauceRatingUpdate.usersLiked.length
+
+      } else if (req.body.dislikes === 0 && sauce.usersDisliked.some(userId => userId === req.body.userId)) {
+        const index = sauce.usersDisliked.findIndex(userId => userId === req.body.userId)
+        sauceRatingUpdate.usersDisliked.splice(index, 1)
+        sauceRatingUpdate.dilikes = sauceRatingUpdate.usersDisliked.length
+
       }
-      // } else if (req.body.likes === 0 //not sure what comes next) TODO: start here
-      /* TODO: petes best and adonis sauce show the wrong info on mongoDB and do not work when like or dislike is 
-      clicked - shows dislikes as undefined and likes as NaN; need a way to clear things from the arrays */
-      // info missing on mongoDb but not sure why, I changed one on the database side and now it works //
-
-
 
   // updating the sauce update object
   Sauce.updateOne({_id: req.params.id}, sauceRatingUpdate)

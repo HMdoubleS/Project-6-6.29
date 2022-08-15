@@ -1,5 +1,5 @@
 const Sauce = require('../models/sauce');
-const fs = require('fs'); // file system
+const fs = require('fs'); // file system - gives access to functions that allow you to modify the file system
 
 exports.createSauce = (req, res, next) => {
   // console.log(filename);
@@ -108,6 +108,16 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({_id: req.params.id}).then(
     (sauce) => {
+      if (!sauce) {
+        return res.status(404).json({
+          error: new Error('Object not found!')
+        })
+      }
+      if (sauce.userId !== req.auth.userId) {
+        return res.status(401).json({
+          error: new Error('Request not authorized!')
+        })
+      }
       const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink('images/' + filename, () => {
         Sauce.deleteOne({_id: req.params.id}).then(

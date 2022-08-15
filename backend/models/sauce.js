@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// data schema that will be exported as a Mongoose model - making it available for your express app
 const sauceSchema = mongoose.Schema({
     userId: { type: String, required: true },
     name: { type: String, required: true },
@@ -14,4 +15,4 @@ const sauceSchema = mongoose.Schema({
     usersDisliked: { type: Array, required: false },
 });
 
-module.exports = mongoose.model('Sauce', sauceSchema);
+module.exports = mongoose.model('Sauce', sauceSchema); // model method turns the schema into a usable model

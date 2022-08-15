@@ -2,8 +2,9 @@ const express = require('express'); // imports framework
 const mongoose = require('mongoose'); 
 const path = require('path');
 const dotenv = require('dotenv');
-const cors = require('cors');
-
+const cors = require('cors'); // enables cross origin requests
+const helmet = require('helmet'); // allows the ability to configure HTTP headers for extra security - helps secure express apps
+const xss = require('xss-clean'); // sanitize user input from POSt, GET and url params
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
@@ -34,7 +35,8 @@ app.use((req, res, next) => {
     next();
 });
 
-
+app.use(helmet());
+app.use(xss());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);

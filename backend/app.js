@@ -25,6 +25,7 @@ mongoose.connect(connectionString)
 app.use(express.json());
 app.use(cors());
 
+
 // setting headers 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

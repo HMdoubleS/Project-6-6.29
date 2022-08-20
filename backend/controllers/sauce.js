@@ -54,42 +54,49 @@ exports.getOneSauce = (req, res, next) => {
   );
 };
 
-// used code from delete in order to delete the old image
+// used code from delete in order to delete the old image - check for owner of the sauce
 exports.modifySauce = (req, res, next) => {
-  let sauce = new Sauce({ _id: req.params._id });
-  if (req.file) {
-    Sauce.findOne({
-      _id: req.params.id
-    }).then((data) => {
-      console.log(data)
-      const originalFilename = data.imageUrl.split('/images/')[1]
-      fs.unlink('/images/' + originalFilename, () => {
-        console.log('Removed old image!')
+  let sauce = new Sauce({_id: req.params._id});
+  
+  Sauce.findOne({ _id: req.params.id}).then(
+  (sauce) => {
+    if(req.auth.userId !== sauce.userId) {  //we need to check Ids as a requirement, otherwise we can change sauce that are not ours in Postman
+      console.log('My Id ' + req.auth.userId + ' is different than');
+      console.log('Sauce owner ' + sauce.userId);
+      return res.status(403).json({
+        error: new Error ('User is not authorized')
       })
-    })
-    const url = req.protocol + '://' + req.get('host');
-    req.body.sauce = JSON.parse(req.body.sauce);
-    sauce = {
-      _id: req.params.id,
-      name: req.body.sauce.name,
-      manufacturer: req.body.sauce.manufacturer,
-      mainPepper: req.body.sauce.mainPepper,
-      imageUrl: url + '/images/' + req.file.filename,
-      heat: req.body.sauce.heat,
-    };
-
-  } else {
-     
-    sauce = {
-      _id: req.params.id,
-      userId: req.body.userId,
-      name: req.body.name,
-      manufacturer: req.body.manufacturer,
-      mainPepper: req.body.mainPepper,
-      imageUrl: req.body.imageUrl,
-      heat: req.body.heat,
-    };
-  }
+    } else if (req.file){
+      const url = req.protocol + '://' + req.get('host');
+      req.body.sauce = JSON.parse(req.body.sauce);
+      const filename = sauce.imageUrl.split('/images/')[1];
+      fs.unlink('images/' + filename, () => {
+       console.log('New image added');
+       console.log('Old image ' + filename + ' deleted');
+      });
+      sauce = {
+        _id: req.params.id,
+        userId: sauce.userId, 
+        name: req.body.sauce.name,
+        manufacturer: req.body.sauce.manufacturer,
+        description: req.body.sauce.description,
+        mainPepper: req.body.sauce.mainPepper,
+        imageUrl: url + '/images/' + req.file.filename,
+        heat: req.body.sauce.heat,
+      };
+    } else {
+      sauce = {
+        _id: req.params.id,
+        userId: sauce.userId,
+        name: req.body.name,
+        manufacturer: req.body.manufacturer,
+        description: req.body.description,
+        mainPepper: req.body.mainPepper,
+        imageUrl: req.body.imageUrl,
+        heat: req.body.heat,
+      };
+    }
+    
   Sauce.updateOne({_id: req.params.id}, sauce).then(
     () => {
       res.status(201).json({
@@ -103,6 +110,7 @@ exports.modifySauce = (req, res, next) => {
       });
     }
   );
+})
 };
 
 exports.deleteSauce = (req, res, next) => {

@@ -4,7 +4,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const cors = require('cors'); // enables cross origin requests - used this to remove a cors error
 const helmet = require('helmet'); // allows the ability to configure HTTP headers for extra security - helps secure express apps
-const xss = require('xss-clean'); // sanitize user input from POSt, GET and url params
+const xss = require('xss-clean'); // sanitize user input from POST, GET and url params
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');

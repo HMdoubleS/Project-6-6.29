@@ -1,4 +1,4 @@
-const http = require('http'); // brings in http module
+const http = require('http'); // brings in http module - https instead of http *****
 const app = require('./app'); // brings in the app js file - build server using this
 
 // returns a valid port - whether it is provided as a number or a string
